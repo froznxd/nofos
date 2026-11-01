@@ -1,0 +1,29 @@
+[[permission]]
+identifier = "allow-get-vault-path"
+description = "Allows get_vault_path"
+commands.allow = ["get_vault_path"]
+
+[[permission]]
+identifier = "allow-set-vault-path"
+description = "Allows set_vault_path"
+commands.allow = ["set_vault_path"]
+
+[[permission]]
+identifier = "allow-list-notes"
+description = "Allows list_notes"
+commands.allow = ["list_notes"]
+
+[[permission]]
+identifier = "allow-read-note"
+description = "Allows read_note"
+commands.allow = ["read_note"]
+
+[[permission]]
+identifier = "allow-write-note"
+description = "Allows write_note"
+commands.allow = ["write_note"]
+
+[[permission]]
+identifier = "allow-create-note"
+description = "Allows create_note"
+commands.allow = ["create_note"]

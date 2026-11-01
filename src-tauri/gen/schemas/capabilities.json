@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Default capabilities for the notes app","local":true,"windows":["main"],"permissions":["core:default","core:path:default","dialog:default","store:default","allow-get-vault-path","allow-set-vault-path","allow-list-notes","allow-read-note","allow-write-note","allow-create-note"]}}

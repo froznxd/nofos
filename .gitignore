@@ -11,15 +11,14 @@ node_modules
 dist
 dist-ssr
 *.local
-.npm-cache
-.cargo
-.rustup
 
-# Editor
+# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
-
-# Tauri
-src-tauri/target
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

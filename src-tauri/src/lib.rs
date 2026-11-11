@@ -3,7 +3,6 @@ use std::fs;
 
 #[derive(Serialize)]
 struct Note {
-    id: i128,
     name: String,
     content: String,
 }
@@ -23,7 +22,6 @@ struct Note {
 fn load_notes(vault_path: String) -> Result<Vec<Note>, String> {
     let mut notes: Vec<Note> = vec![];
     let entries = fs::read_dir(vault_path).expect("unable to read dir");
-    let mut id = 0;
 
     for entry in entries {
         let entry = entry.unwrap();
@@ -32,14 +30,20 @@ fn load_notes(vault_path: String) -> Result<Vec<Note>, String> {
         let entry_file_name = entry.file_name();
 
         notes.push(Note {
-            id: id,
             name: entry_file_name.to_string_lossy().to_string(),
             content: entry_file_name.to_string_lossy().to_string(),
         });
-        id += 1;
     }
 
     Ok(notes)
+}
+
+#[tauri::command]
+fn load_note_content(note_path: String) -> Result<String, String> {
+    let note_content: String;
+    note_content = fs::read_to_string(note_path).expect("unable to read content");
+
+    Ok(note_content)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -48,7 +52,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![load_notes])
+        .invoke_handler(tauri::generate_handler![load_notes, load_note_content])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

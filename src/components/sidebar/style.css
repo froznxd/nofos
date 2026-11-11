@@ -89,6 +89,10 @@
             background-color: #1b2c4f;
             color: #89c0ff;
         }
+        &.active:hover {
+            background-color: #1b2c4f;
+            color: #89c0ff;
+        }
 
         &:hover {
             background-color: #2b2b2b;

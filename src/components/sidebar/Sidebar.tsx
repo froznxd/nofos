@@ -1,24 +1,21 @@
 import { useCallback, useState } from 'react';
 import './style.css';
 import { invoke } from '@tauri-apps/api/core';
+import { Note } from '../../types/note';
 
 const SIDEBAR_MIN_WIDTH = 180;
 const SIDEBAR_MAX_WIDTH = 520;
 const SIDEBAR_DEFAULT_WIDTH = 300;
 
-// Define the object structure
-interface Note {
-    name: string;
-    content: string;
-}
-
 interface SidebarProps {
     handleSelectVault: () => void;
     vaultPath: string | null;
     notesList: Note[];
+    handleSelectNote: (note: Note) => void;
+    selectedNote: Note;
 }
 
-const Sidebar = ({ handleSelectVault, notesList }: SidebarProps) => {
+const Sidebar = ({ handleSelectVault, notesList, handleSelectNote, selectedNote }: SidebarProps) => {
     const [width, setWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
 
     const createNote = () => {
@@ -55,8 +52,12 @@ const Sidebar = ({ handleSelectVault, notesList }: SidebarProps) => {
         return (
             <>
                 {
-                    list.map((note, index) => (
-                        <div key={note.name} className={`sidebar-item ${index ? "" : "active"}`}>
+                    list.map((note) => (
+                        <div 
+                            key={note.name} 
+                            className={`sidebar-item ${selectedNote.name === note.name ? "active" : ""}`}
+                            onClick={() => handleSelectNote(note)}
+                        >
                             <span>{note.name}</span>
                         </div>
                     ))

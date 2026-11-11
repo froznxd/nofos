@@ -1,20 +1,25 @@
 import { useState } from 'react';
 import './style.css';
+import { Note } from '../../types/note';
 
-const Editor = () => {
-    const [noteTitle, setNoteTitle] = useState('notes-01-02-2026.md');
-    const [noteContent, setNoteContent] = useState('');
+interface EditorProps {
+    selectedNote: Note;
+    handleSelectedNoteContentChange: (content: string) => void;
+    selectedNoteContent: string;
+}
+
+const Editor = ({selectedNote, handleSelectedNoteContentChange, selectedNoteContent} : EditorProps) => {
 
     return (
         <div className="editor">
-            <div className="editor-header">{noteTitle}</div>
+            <div className="editor-header">{selectedNote.name}</div>
             <textarea 
                 // placeholder="Write your code here..."
                 className="editor-textarea"
                 spellCheck={false}
                 autoFocus={true}
-                value={noteContent}
-                onChange={(e) => setNoteContent(e.target.value)}
+                value={selectedNoteContent}
+                onChange={(e) => handleSelectedNoteContentChange(e.target.value)}
             >
             </textarea>
         </div>

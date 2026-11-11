@@ -6,29 +6,46 @@ import { LazyStore } from '@tauri-apps/plugin-store';
 import "./App.css";
 import Editor from "./components/editor";
 import Sidebar from "./components/sidebar";
+import { Note } from "./types/note";
 
 const App = () => {
   const store = new LazyStore('config.json');
 
   const [vaultPath, setVaultPath] : [String|null, any] = useState(null);
-  const [notesList, setNotesList] = useState([{}]);
+  const [notesList, setNotesList] = useState<Note[]>([]);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [selectedNoteContent, setSelectedNoteContent] = useState<string>('');
 
-  const loadVaultDir = async () => {
+  useEffect(() => {
+    if(selectedNote) {
+      setSelectedNoteContent(selectedNote.content);
+    }
+  }, [selectedNote])
+
+  const loadNotesFromVault = async () => {
     const vaultPathFromConfig : string|undefined = await store.get("vaultPath");
 
     if (!vaultPathFromConfig) return;
     setVaultPath(vaultPathFromConfig);
-  }
-
-  const loadNotesFromVault = async () => {
-    console.log(vaultPath)
-    if(!vaultPath) return;
     
-    const notesList : Array<Object> | undefined= await invoke('load_notes', { vaultPath });
+    const notesList : Note[] = await invoke('load_notes', { vaultPath: vaultPathFromConfig });
 
     if(!notesList) return;
-    
     setNotesList(notesList);
+  }
+
+  const handleSelectNote = async (note: Note) => {
+    setSelectedNote(note);
+    const noteContent : string = await invoke('load_note_content', {notePath: `${vaultPath}/${note.name}`});
+
+    if(!noteContent) return;
+
+    setSelectedNote(note);
+    setSelectedNoteContent(noteContent);
+  }
+
+  const handleSelectedNoteContentChange = (content: string) => {
+    setSelectedNoteContent(content);
   }
 
   const handleSelectVault = async () => {
@@ -45,12 +62,8 @@ const App = () => {
   }
 
   useEffect(() => {
-    loadVaultDir()
-  }, [])
-
-  useEffect(() => {
     loadNotesFromVault() 
-  }, [vaultPath])
+  }, [])
   
 
   return (
@@ -60,8 +73,14 @@ const App = () => {
           handleSelectVault={handleSelectVault} 
           vaultPath={vaultPath} 
           notesList={notesList}
+          selectedNote={selectedNote || {name: '', content: ''}}
+          handleSelectNote={handleSelectNote}
         />
-        <Editor />
+        <Editor 
+          selectedNote={selectedNote || {name: '', content: ''}}
+          selectedNoteContent={selectedNoteContent}
+          handleSelectedNoteContentChange={handleSelectedNoteContentChange}
+        />
       </div>
     </main>
   );
